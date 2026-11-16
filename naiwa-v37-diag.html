@@ -189,7 +189,7 @@ var ZONES = [
  {id:"shoot", name:"篮球场", x:88, z:-78, r:9, label:"🏀 打篮球"},
  {id:"sport", name:"体育馆", x:95, z:101, r:8, label:"🏸 去体育馆运动"},
  {id:"club", name:"活动中心", x:15, z:109, r:7, label:"🎭 去活动中心"},
- {id:"sleep", name:"宿舍·床铺", x:-106, z:-400, r:5, indoor:true, label:"🛏️ 在宿舍睡觉"},
+ {id:"sleep", name:"宿舍·床铺", x:-100, z:-402, r:5, indoor:true, label:"🛏️ 在宿舍睡觉"},
  {id:"class", name:"教室", x:-50, z:-398, r:6, indoor:true, label:"📚 在教室上课"},
  {id:"study", name:"图书馆·自习区", x:0, z:-394, r:5.5, indoor:true, label:"✏️ 在图书馆自习"},
  {id:"eat", name:"食堂·餐桌", x:44, z:-396, r:5.5, indoor:true, label:"🍜 在食堂吃饭"},
@@ -1918,32 +1918,24 @@ document.addEventListener("DOMContentLoaded", function(){
 (function(){
   var want = new URLSearchParams(location.search).get("room");
   if(!want) return;
-  var stage = 0, ticks = 0;
+  var stage = 0, ticks = 0, ent = null;
   var iv = setInterval(function(){
     ticks++;
-    if(ticks > 240){ clearInterval(iv); return; }
+    if(ticks > 200){ clearInterval(iv); return; }
     try{
+      var W = window.__WORLD;
       if(stage === 0){
         var b = document.getElementById("startBtn");
-        if(b && typeof ENTRANCES !== "undefined" && ENTRANCES.length){ b.click(); stage = 1; }
+        if(b && W && W.fadeGo && W.entrances){ b.click(); stage = 1; }
       } else if(stage === 1){
-        var ent = null;
-        for(var i=0;i<ENTRANCES.length;i++) if(ENTRANCES[i].name === want) ent = ENTRANCES[i];
-        if(ent && typeof player !== "undefined" && player.pos){
-          player.pos.set(ent.x, 0, ent.z);
-          stage = 2;
-          setTimeout(function(){
-            var ev1 = new KeyboardEvent("keydown", {code:"KeyE", key:"e", bubbles:true});
-            var ev2 = new KeyboardEvent("keyup", {code:"KeyE", key:"e", bubbles:true});
-            document.dispatchEvent(ev1); window.dispatchEvent(ev1);
-            document.dispatchEvent(ev2); window.dispatchEvent(ev2);
-          }, 700);
-        }
+        var es = W.entrances();
+        for(var i=0;i<es.length;i++) if(es[i].name === want) ent = es[i];
+        if(ent){ W.fadeGo(ent.sx, ent.sz, Math.PI, true, ent); stage = 2; }
       } else if(stage === 2){
-        if(typeof INDOOR !== "undefined" && INDOOR.active){ clearInterval(iv); }
+        if(W.indoor && W.indoor().active) clearInterval(iv);
       }
     }catch(e){}
-  }, 300);
+  }, 350);
 })();
 </script>
 </body>
