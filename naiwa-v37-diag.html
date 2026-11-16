@@ -1930,7 +1930,7 @@ document.addEventListener("DOMContentLoaded", function(){
       } else if(stage === 1){
         var es = W.entrances();
         for(var i=0;i<es.length;i++) if(es[i].name === want) ent = es[i];
-        if(ent){ W.fadeGo(ent.sx, ent.sz, Math.PI, true, ent); stage = 2; }
+        if(ent){ var DEST = {"宿舍": [-100,-399], "教学楼": [-50,-398]}; var d = DEST[want] || [ent.sx, ent.sz]; W.fadeGo(d[0], d[1], Math.PI, true, ent); stage = 2; }
       } else if(stage === 2){
         if(W.indoor && W.indoor().active) clearInterval(iv);
       }
