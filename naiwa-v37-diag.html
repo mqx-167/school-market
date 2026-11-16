@@ -1932,7 +1932,19 @@ document.addEventListener("DOMContentLoaded", function(){
         for(var i=0;i<es.length;i++) if(es[i].name === want) ent = es[i];
         if(ent){ var DEST = {"宿舍": [-100,-399], "教学楼": [-50,-398]}; var d = DEST[want] || [ent.sx, ent.sz]; W.fadeGo(d[0], d[1], Math.PI, true, ent); stage = 2; }
       } else if(stage === 2){
-        if(W.indoor && W.indoor().active) clearInterval(iv);
+        if(W.indoor && W.indoor().active){
+          stage = 3;
+          var wm = (ent.name === "宿舍") ? 1600 : 2200;
+          setTimeout(function(){
+            var d1 = new KeyboardEvent("keydown", {code:"KeyW", key:"w", bubbles:true});
+            document.dispatchEvent(d1); window.dispatchEvent(d1);
+            setTimeout(function(){
+              var d2 = new KeyboardEvent("keyup", {code:"KeyW", key:"w", bubbles:true});
+              document.dispatchEvent(d2); window.dispatchEvent(d2);
+              clearInterval(iv);
+            }, wm);
+          }, 600);
+        }
       }
     }catch(e){}
   }, 350);
